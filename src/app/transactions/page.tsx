@@ -9,6 +9,10 @@ export interface Transaction {
   amount: number | string;
   currency: string;
   description: string | null;
+  product?: string | null;
+  quantity?: number | null;
+  paypal_order_id?: string | null;
+  paypal_capture_id?: string | null;
   created_at: string;
 }
 
@@ -135,9 +139,10 @@ export default function TransactionsPage() {
               <thead>
                 <tr>
                   <th>Transaction ID</th>
+                  <th>Product / Details</th>
                   <th>Amount</th>
                   <th>Status</th>
-                  <th>Description</th>
+                  <th>PayPal IDs</th>
                   <th>Date &amp; Time</th>
                 </tr>
               </thead>
@@ -149,6 +154,12 @@ export default function TransactionsPage() {
                         {tx.id}
                       </code>
                     </td>
+                    <td>
+                      <div style={{ fontWeight: 600 }}>{tx.product || tx.description || "OmniTrust Purchase"}</div>
+                      {tx.quantity ? (
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Qty: {tx.quantity}</span>
+                      ) : null}
+                    </td>
                     <td style={{ fontWeight: 600 }}>
                       {tx.currency} {typeof tx.amount === "number" ? tx.amount.toFixed(2) : tx.amount}
                     </td>
@@ -157,8 +168,20 @@ export default function TransactionsPage() {
                         {tx.status}
                       </span>
                     </td>
-                    <td style={{ color: "var(--text-muted)" }}>
-                      {tx.description || "N/A"}
+                    <td style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                      {tx.paypal_order_id ? (
+                        <div>
+                          <span>Order: </span>
+                          <code style={{ fontSize: "0.75rem" }}>{tx.paypal_order_id}</code>
+                        </div>
+                      ) : null}
+                      {tx.paypal_capture_id ? (
+                        <div>
+                          <span>Capture: </span>
+                          <code style={{ fontSize: "0.75rem" }}>{tx.paypal_capture_id}</code>
+                        </div>
+                      ) : null}
+                      {!tx.paypal_order_id && !tx.paypal_capture_id && "N/A"}
                     </td>
                     <td style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
                       {new Date(tx.created_at).toLocaleString()}

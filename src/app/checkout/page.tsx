@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 
 type CheckoutState = "loading" | "ready" | "processing" | "capturing" | "success" | "cancelled" | "error";
 
@@ -9,6 +10,7 @@ interface CaptureResult {
   captureId?: string;
   status?: string;
   message?: string;
+  transaction?: any;
 }
 
 export default function CheckoutPage() {
@@ -156,6 +158,12 @@ export default function CheckoutPage() {
       const response = await fetch(`${API_URL}/api/paypal/orders/${encodeURIComponent(orderId)}/capture`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          product: "OmniTrust Test Product",
+          quantity: 1,
+          amount: 100.0,
+          currency: "USD",
+        }),
       });
 
       const data = await response.json();
@@ -332,25 +340,42 @@ export default function CheckoutPage() {
               The PayPal order was approved and captured via the OmniTrust backend.
             </p>
             <div style={{ fontSize: "0.85rem", background: "#ffffff", padding: "0.75rem", borderRadius: "var(--radius-sm)", border: "1px solid #d1fae5" }}>
-              {createdOrderId && <p><strong>Order ID:</strong> {createdOrderId}</p>}
-              {captureResult?.captureId && <p><strong>Capture ID:</strong> {captureResult.captureId}</p>}
+              {createdOrderId && <p><strong>PayPal Order ID:</strong> {createdOrderId}</p>}
+              {captureResult?.captureId && <p><strong>PayPal Capture ID:</strong> {captureResult.captureId}</p>}
               {captureResult?.status && <p><strong>Status:</strong> {captureResult.status}</p>}
+              {captureResult?.transaction?.id && <p><strong>Database Record ID:</strong> {captureResult.transaction.id}</p>}
             </div>
-            <button
-              onClick={handleReset}
-              style={{
-                marginTop: "1rem",
-                padding: "0.5rem 1rem",
-                backgroundColor: "#059669",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: "var(--radius-sm)",
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              Test Another Purchase
-            </button>
+            <div style={{ display: "flex", gap: "0.75rem", marginTop: "1rem", flexWrap: "wrap" }}>
+              <Link
+                href="/transactions"
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#059669",
+                  color: "#ffffff",
+                  textDecoration: "none",
+                  borderRadius: "var(--radius-sm)",
+                  fontWeight: 600,
+                  fontSize: "0.9rem",
+                }}
+              >
+                View in Transactions Table &rarr;
+              </Link>
+              <button
+                onClick={handleReset}
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#ffffff",
+                  color: "#059669",
+                  border: "1px solid #059669",
+                  borderRadius: "var(--radius-sm)",
+                  fontWeight: 600,
+                  fontSize: "0.9rem",
+                  cursor: "pointer",
+                }}
+              >
+                Test Another Purchase
+              </button>
+            </div>
           </div>
         )}
 
