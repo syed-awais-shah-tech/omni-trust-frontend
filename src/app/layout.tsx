@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Navbar from "@/components/Navbar";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "OmniTrust",
-  description: "OmniTrust - PayPal AI Hackathon",
+  description: "AI-Powered Payment Security & Dispute Management",
 };
 
 export default function RootLayout({
@@ -12,8 +14,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <Navbar />
+        <main className="main-container">{children}</main>
+        <footer className="footer">
+          <p>OmniTrust &bull; PayPal AI Hackathon 2026</p>
+        </footer>
+      </body>
     </html>
   );
 }
+
 
