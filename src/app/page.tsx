@@ -24,6 +24,16 @@ export default function HomePage() {
         </p>
 
         <div className="card-grid">
+          <Link href="/checkout" className="feature-card" style={{ borderColor: "var(--color-primary)" }}>
+            <div className="feature-title">
+              <span>PayPal Checkout (Test)</span>
+              <span>&rarr;</span>
+            </div>
+            <p className="feature-description">
+              Test PayPal Sandbox checkout integration with v6 SDK and order capture.
+            </p>
+          </Link>
+
           <Link href="/dashboard" className="feature-card">
             <div className="feature-title">
               <span>Security Dashboard</span>
